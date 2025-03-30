@@ -7,9 +7,7 @@ export default function Chat() {
   const [chatHistory, setChatHistory] = useState([]);
 
   const sendMessage = async () => {
-    if (!message) return;
-
-    setChatHistory([...chatHistory, { sender: "user", text: message }]);
+    if (!message.trim()) return;
 
     try {
       const response = await fetch("/api/chat", {
@@ -21,15 +19,35 @@ export default function Chat() {
       });
 
       const data = await response.json();
-      setChatHistory((prev) => [...prev, { sender: "ai", text: data.reply }]);
+      setChatHistory(data.history); // Update chat history from API response
     } catch {
       setChatHistory((prev) => [
         ...prev,
         { sender: "ai", text: "Error occurred." },
       ]);
     } finally {
-      setMessage("");
+      setMessage(""); // Clear input after sending
     }
+  };
+
+  const handleKeyDown = (e) => {
+    // Cmd (⌘) + Enter or Ctrl + Enter to send message
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+      e.preventDefault(); // Prevent default behavior (like adding a new line)
+      sendMessage();
+    }
+    // Enter (alone) sends the message
+    else if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); // Prevent adding a newline
+      sendMessage();
+    }
+    // Escape (Esc) clears the message
+    else if (e.key === "Escape") {
+      e.preventDefault(); // Prevent default browser actions
+      setMessage(""); // Clear the input field
+    }
+    // Shift + Enter for new line
+    // No special handling needed as Shift + Enter is the default behavior for textareas
   };
 
   return (
@@ -62,6 +80,7 @@ export default function Chat() {
       <textarea
         value={message}
         onChange={(e) => setMessage(e.target.value)}
+        onKeyDown={handleKeyDown} // Listen for keypress events
         placeholder="Type your message..."
         rows="4"
         style={{
