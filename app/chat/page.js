@@ -6,6 +6,11 @@ export default function Chat() {
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
 
+  const formatMessage = (text) => {
+    // Preserve **text** formatting for italics
+    return text.replace(/\*\*(.*?)\*\*/g, "<em>$1</em>");
+  };
+
   const sendMessage = async () => {
     if (!message.trim()) return;
 
@@ -31,78 +36,67 @@ export default function Chat() {
   };
 
   const handleKeyDown = (e) => {
-    // Cmd (⌘) + Enter or Ctrl + Enter to send message
     if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-      e.preventDefault(); // Prevent default behavior (like adding a new line)
+      e.preventDefault();
       sendMessage();
-    }
-    // Enter (alone) sends the message
-    else if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault(); // Prevent adding a newline
+    } else if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
       sendMessage();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      setMessage("");
     }
-    // Escape (Esc) clears the message
-    else if (e.key === "Escape") {
-      e.preventDefault(); // Prevent default browser actions
-      setMessage(""); // Clear the input field
-    }
-    // Shift + Enter for new line
-    // No special handling needed as Shift + Enter is the default behavior for textareas
   };
 
   return (
-    <div
-      style={{
-        fontFamily: "Arial, sans-serif",
-        maxWidth: "600px",
-        margin: "0 auto",
-      }}
-    >
-      <h1 style={{ textAlign: "center" }}>AI Chat</h1>
-      <div
-        style={{
-          border: "1px solid #ddd",
-          padding: "10px",
-          borderRadius: "8px",
-          marginBottom: "10px",
-        }}
-      >
+    <div className="flex flex-col h-screen w-full bg-gray-100">
+      {/* Header */}
+      <header className="bg-blue-500 text-white py-4 px-6 text-center text-xl font-bold">
+        AI Chat
+      </header>
+
+      {/* Chat Container */}
+      <div className="flex flex-1 flex-col p-4 space-y-4 overflow-y-auto">
         {chatHistory.map((chat, index) => (
-          <p
+          <div
             key={index}
-            style={{ textAlign: chat.sender === "user" ? "right" : "left" }}
+            className={`flex ${
+              chat.sender === "user" ? "justify-end" : "justify-start"
+            }`}
           >
-            <strong>{chat.sender === "user" ? "You" : "AI"}: </strong>
-            {chat.text}
-          </p>
+            <div
+              className={`px-4 py-2 rounded-lg max-w-md break-words shadow ${
+                chat.sender === "user"
+                  ? "bg-blue-500 text-white"
+                  : "bg-green-500 text-white"
+              }`}
+              dangerouslySetInnerHTML={{
+                __html: `<strong>${
+                  chat.sender === "user" ? "You" : "AI"
+                }:</strong> ${formatMessage(chat.text)}`,
+              }}
+            ></div>
+          </div>
         ))}
       </div>
-      <textarea
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        onKeyDown={handleKeyDown} // Listen for keypress events
-        placeholder="Type your message..."
-        rows="4"
-        style={{
-          width: "100%",
-          padding: "10px",
-          borderRadius: "4px",
-          marginBottom: "10px",
-        }}
-      />
-      <button
-        onClick={sendMessage}
-        style={{
-          width: "100%",
-          padding: "10px",
-          background: "#4a90e2",
-          color: "#fff",
-          border: "none",
-          borderRadius: "4px",
-        }}
-      >
-        Send
-      </button>
+
+      {/* Input Area */}
+      <div className="flex items-center p-4 border-t border-gray-300">
+        <textarea
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Type your message..."
+          rows="2"
+          className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2"
+        />
+        <button
+          onClick={sendMessage}
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+        >
+          Send
+        </button>
+      </div>
     </div>
   );
 }
