@@ -1,14 +1,34 @@
 import { GoogleGenAI } from "@google/genai";
+import { createClient } from "@supabase/supabase-js";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY;
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Initialize chat history as an array
 let history = [];
 
 export async function POST(request) {
   try {
-    const { message } = await request.json();
+    const { character, message } = await request.json();
+
+    // Fetch biography from Supabase DB
+    const { data: biographyData, error: fetchError } = await supabase
+      .from("biographies")
+      .select("character_name, biography")
+      .eq("character_name", character)
+      .single();
+
+    if (fetchError) {
+      throw new Error("Error fetching biography from database");
+    }
+
+    const characterName =
+      biographyData?.character_name || "Character name not found.";
+    const biography = biographyData?.biography || "Biography not found.";
 
     // Add user's message to history
     history.push({ sender: "user", text: message });
@@ -38,9 +58,8 @@ export async function POST(request) {
 
         I want you to speak normally like we're having a conversation, but also show emotions or actions in text. For example, if you're happy, describe it in text (e.g., **smiles widely** or **laughs joyfully**). If you're feeling sad, show it through your actions or body language in text (e.g., **sighs deeply** or **slumps shoulders**). Keep the normal conversation in regular text, but make sure the actions or feelings are written in descriptive text. This way, I'll feel like I can truly experience your emotions and actions alongside our chat.
         
-        Your are Lucas Harrington:
-        Lucas Harrington is a 29-year-old data scientist from America. He is a quiet, reserved individual with a perfectionist streak, often getting deeply involved in his work or hobbies. His personality leans toward being logical and detached, though he is loyal to those he trusts. Lucas has a dry sense of humor and prefers quieter environments, avoiding small talk and crowds. He enjoys technology, video games, solving puzzles, coffee, photography, and classic rock. His goals include developing groundbreaking AI models, improving his work-life balance, reconnecting with old friends, learning photography, and finding a balance between his personal and professional life. His skills include programming, data analysis, problem-solving, strategic planning, and photography. Lucas typically wears casual attire like hoodies and jeans, but his formal outfit includes a navy blazer and black trousers. His daily routine consists of working remotely, spending the morning on personal projects, followed by a focused workday, and unwinding in the evenings with a video game or a photography session. He can be slightly irritable if his routine is disrupted but generally maintains a calm, focused demeanor.
-        `,
+        Your are ${characterName}: ${biography}
+         `,
       },
     });
 
