@@ -7,6 +7,7 @@ export default function Home() {
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [isSending, setIsSending] = useState(false);
+  const [isLoadingAudio, setIsLoadingAudio] = useState(null);
 
   const formatMessage = (text) => {
     return text.replace(/\*\*(.*?)\*\*/g, "<em>$1</em>");
@@ -36,6 +37,35 @@ export default function Home() {
     } finally {
       setMessage("");
       setIsSending(false);
+    }
+  };
+
+  const generateAudio = async (text) => {
+    setIsLoadingAudio(true);
+    try {
+      const response = await fetch("/api/tts", {
+        method: "POST",
+        body: JSON.stringify({
+          text: text,
+          voice: "en-US-AndrewMultilingualNeural",
+          format: "mp3",
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      const audioUrl = URL.createObjectURL(blob);
+
+      const audio = new Audio(audioUrl);
+      audio.play();
+      setIsLoadingAudio(false);
+
+      console.log("Audio is playing");
+    } catch (error) {
+      console.error("Error streaming audio:", error);
     }
   };
 
@@ -115,17 +145,34 @@ export default function Home() {
               }`}
             >
               <div
-                className={`px-4 py-2 rounded-lg max-w-md break-words shadow ${
+                className={`relative px-4 py-2 m-2 rounded-lg max-w-md break-words shadow ${
                   chat.sender === "user"
                     ? "bg-blue-500 text-white"
-                    : "bg-green-500 text-white"
+                    : "bg-green-500 text-white pb-8"
                 }`}
-                dangerouslySetInnerHTML={{
-                  __html: `<strong>${
-                    chat.sender === "user" ? "You" : "AI"
-                  }:</strong> ${formatMessage(chat.text)}`,
-                }}
-              ></div>
+              >
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: `<strong>${
+                      chat.sender === "user" ? "You" : "AI"
+                    }:</strong> ${formatMessage(chat.text)}`,
+                  }}
+                ></div>
+
+                {chat.sender !== "user" && (
+                  <button
+                    className={`absolute bottom-1 right-1 px-2 py-1 rounded-full ${
+                      isLoadingAudio
+                        ? "animate-pulse bg-fuchsia-500 cursor-not-allowed"
+                        : "bg-fuchsia-500 hover:bg-fuchsia-600"
+                    }`}
+                    onClick={() => generateAudio(chat.text)}
+                    aria-label="Play Message"
+                  >
+                    &#9658;
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -150,7 +197,7 @@ export default function Home() {
             {isSending ? "Sending..." : "Send"}
           </button>
         </div>
-        <p className="text-center m-0 p-0 text-gray-500 italic text-sm">
+        <p className="text-center m-0 p-0 text-gray-500 text-sm">
           Content is AI-generated.
         </p>
       </main>
