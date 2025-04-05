@@ -1,19 +1,16 @@
 "use client";
 import { useState } from "react";
 
-const ChatPage = ({ character, voice, character_id }) => {
+const ChatPage = ({ character, character_id }) => {
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [isSending, setIsSending] = useState(false);
-  const [isLoadingAudio, setIsLoadingAudio] = useState(null);
+  const [isLoadingAudio, setIsLoadingAudio] = useState(false);
 
-  const formatMessage = (text) => {
-    return text.replace(/\*\*(.*?)\*\*/g, "<em>$1</em>");
-  };
+  const formatMessage = (text) => text.replace(/\*\*(.*?)\*\*/g, "<em>$1</em>");
 
   const sendMessage = async () => {
-    if (!message.trim() || isSending) return; // Prevent double messages
-
+    if (!message.trim() || isSending) return;
     setIsSending(true);
 
     try {
@@ -22,15 +19,21 @@ const ChatPage = ({ character, voice, character_id }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ character_id, message }),
+        body: JSON.stringify({ character_id, message, history: chatHistory }),
       });
 
       const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
       setChatHistory(data.history);
-    } catch {
+    } catch (error) {
+      console.error(error);
       setChatHistory((prev) => [
         ...prev,
-        { sender: "ai", text: "Error occurred." },
+        { sender: "ai", text: "Error occurred while processing your request." },
       ]);
     } finally {
       setMessage("");
@@ -39,15 +42,13 @@ const ChatPage = ({ character, voice, character_id }) => {
   };
 
   const generateAudio = async (text) => {
+    if (isLoadingAudio) return;
     setIsLoadingAudio(true);
+
     try {
       const response = await fetch("/api/tts", {
         method: "POST",
-        body: JSON.stringify({
-          text: text,
-          voice: character.voice,
-          format: "mp3",
-        }),
+        body: JSON.stringify({ text, voice: character.voice, format: "mp3" }),
       });
 
       if (!response.ok) {
@@ -59,10 +60,10 @@ const ChatPage = ({ character, voice, character_id }) => {
 
       const audio = new Audio(audioUrl);
       audio.play();
-      setIsLoadingAudio(false);
-      console.log("Audio is playing");
+      audio.onended = () => setIsLoadingAudio(false);
     } catch (error) {
       console.error("Error streaming audio:", error);
+      setIsLoadingAudio(false);
     }
   };
 
@@ -106,7 +107,6 @@ const ChatPage = ({ character, voice, character_id }) => {
                   }:</strong> ${formatMessage(chat.text)}`,
                 }}
               ></div>
-
               {chat.sender !== "user" && (
                 <button
                   className={`absolute bottom-1 right-1 px-2 py-1 rounded-full ${
@@ -115,6 +115,7 @@ const ChatPage = ({ character, voice, character_id }) => {
                       : "bg-fuchsia-500 hover:bg-fuchsia-600"
                   }`}
                   onClick={() => generateAudio(chat.text)}
+                  disabled={isLoadingAudio}
                   aria-label="Play Message"
                 >
                   &#9658;
@@ -124,7 +125,6 @@ const ChatPage = ({ character, voice, character_id }) => {
           </div>
         ))}
       </div>
-
       <div className="flex items-center p-4 pb-0 border-t border-gray-300">
         <textarea
           required

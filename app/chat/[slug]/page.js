@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, use } from "react";
 import ChatPage from "../../components/ChatPage";
+import Link from "next/link";
 
 export default function SupabaseMain({ params }) {
   const { slug } = use(params);
@@ -51,7 +52,7 @@ export default function SupabaseMain({ params }) {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4 sm:p-8">
       <header className="bg-blue-600 text-white py-4 px-6 text-center text-xl font-bold shadow-md rounded-xl">
-        Character Chat AI
+        <Link href="/">Character Chat AI</Link>
       </header>
       <ChatPage character={character} character_id={slug} />
     </div>
