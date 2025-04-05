@@ -2,6 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
+// Generate a character by sending a GET request to this route
 export async function GET(request) {
   try {
     const response = await ai.models.generateContent({

@@ -13,13 +13,13 @@ let history = [];
 
 export async function POST(request) {
   try {
-    const { character, message } = await request.json();
+    const { character_id, message } = await request.json();
 
     // Fetch biography from Supabase DB
     const { data: biographyData, error: fetchError } = await supabase
       .from("biographies")
-      .select("character_name, biography")
-      .eq("character_name", character)
+      .select("id, character_name, biography")
+      .eq("id", character_id)
       .single();
 
     if (fetchError) {
