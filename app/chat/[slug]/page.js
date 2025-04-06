@@ -3,7 +3,7 @@ import { useState, useEffect, use } from "react";
 import ChatPage from "../../components/ChatPage";
 import Link from "next/link";
 
-export default function SupabaseMain({ params }) {
+export default function ChatSlug({ params }) {
   const { slug } = use(params);
   const [character, setCharacter] = useState(null);
   const [isLoading, setIsLoading] = useState(true);

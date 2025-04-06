@@ -10,10 +10,16 @@ export default function Home() {
       </header>
 
       <main className="flex flex-col flex-1 w-full max-w-3xl bg-white rounded-lg shadow-lg p-4 mt-8 space-y-4 overflow-hidden">
-        <Link href="/chat/1" className="w-full bg-blue-400 rounded-lg">
+        <Link
+          href="/chat/58e1b5a0-099b-43b6-bc53-358c99b6e1a7"
+          className="w-full bg-blue-400 rounded-lg"
+        >
           Lucas Harrington
         </Link>
-        <Link href="/chat/4" className="w-full bg-blue-400 rounded-lg">
+        <Link
+          href="/chat/86a56fec-9946-4752-a31a-bfdd04a060d2"
+          className="w-full bg-blue-400 rounded-lg"
+        >
           Aiko Takahashi
         </Link>
       </main>

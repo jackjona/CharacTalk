@@ -25,8 +25,8 @@ export async function POST(request) {
     // Fetch biography from Supabase
     const { data: biographyData, error: fetchError } = await supabase
       .from("biographies")
-      .select("id, character_name, biography")
-      .eq("id", character_id)
+      .select("character_id, character_name, biography")
+      .eq("character_id", character_id)
       .single();
 
     if (fetchError) {
