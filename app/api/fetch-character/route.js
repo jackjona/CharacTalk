@@ -24,7 +24,7 @@ export async function POST(request) {
   try {
     const { data, error } = await supabase
       .from("biographies")
-      .select("character_id, character_name, biography, voice")
+      .select("character_id, character_name, description, biography, voice")
       .eq("character_id", character_id)
       .single();
 

@@ -40,7 +40,7 @@ export default function ChatSlug({ params }) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex justify-center items-center bg-gray-100">
+      <div className="min-h-screen flex justify-center items-center bg-slate-800">
         <div className="animate-spin rounded-full h-16 w-16 border-t-10 border-r-24 border-b-10 border-l-24 border-blue-600"></div>
       </div>
     );
@@ -50,7 +50,7 @@ export default function ChatSlug({ params }) {
 
   // Pass the fetched data and props to the reusable Home component
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4 sm:p-8">
+    <div className="min-h-screen bg-slate-900 flex flex-col items-center p-4 sm:p-8">
       <header className="bg-blue-600 text-white py-4 px-6 text-center text-xl font-bold shadow-md rounded-xl">
         <Link href="/">Character Chat AI</Link>
       </header>
