@@ -1,8 +1,8 @@
 {
-  "name": "Next.js Chat",
-  "short_name": "ChatApp",
+  "name": "CharacTalk",
+  "short_name": "CharacTalk",
   "start_url": "/",
-  "description": "A powerful PWA chat app built with Next.js.",
+  "description": "CharacTalk is an AI-powered roleplay chat platform where you can interact with dynamic characters and explore endless narratives powered by advanced AI language models.",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#ffffff",

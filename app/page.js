@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
+import Header from "./components/Header";
 
 export default async function Home() {
   const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -9,9 +10,7 @@ export default async function Home() {
   // Query all characters
   const { data: characters, error } = await supabase
     .from("biographies")
-    .select(
-      "character_id, character_name, description, biography, voice, img_url, public"
-    )
+    .select("character_id, character_name, description, img_url, public")
     .eq("public", true);
 
   if (error) {
@@ -21,36 +20,26 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-gray-100 items-center justify-center">
-      <Link href="/">
-        <header className="flex flex-row justify-center items-center bg-slate-700 text-gray-200 p-2 text-xl font-bold shadow-md rounded-2xl mb-8 text-center">
-          <img
-            src="/logo.jpg"
-            alt="Logo"
-            className="mx-auto w-16 h-16 object-cover rounded-full shadow-md"
-          />{" "}
-          <h1 className="pl-4 pr-4">Character Chat</h1>
-        </header>
-      </Link>
-
-      <main className="flex flex-wrap justify-center items-center gap-12 max-w-6xl mx-auto">
+    <div className="flex flex-col bg-linear-45 from-slate-900 from-20% to-[#CB6432] p-10 min-h-screen text-gray-100 items-center justify-center">
+      <Header />
+      <main className="flex flex-wrap justify-center items-center gap-12 max-w-6xl mx-auto pb-6">
         {characters.map((character) => (
           <Link
             key={character.character_id}
             href={`/chat/${character.character_id}`}
-            className="relative group block bg-slate-700 rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 w-64 h-64"
+            className="relative group block bg-slate-700 rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 w-64 h-78"
           >
-            <div
-              className="absolute inset-0 bg-cover bg-center opacity-50 group-hover:opacity-70"
-              style={{ backgroundImage: `url(${character.img_url})` }}
-            ></div>
-            <div className="relative px-4 pt-24 space-y-2 text-center">
-              <h2 className="text-lg font-semibold">
+            <img
+              className="absolute inset-0 h-full w-full object-cover opacity-80 group-hover:opacity-90"
+              src={character.img_url}
+              alt={character.character_name}
+            />
+            <div className="absolute bottom-0 w-full px-2 py-2 pt-8 text-center bg-gradient-to-t from-black to-transparent">
+              <h2 className="text-lg font-semibold text-white">
                 {character.character_name}
               </h2>
               <p className="text-sm text-gray-300">{character.description}</p>
             </div>
-            <div className="absolute inset-0 bg-black opacity-0 transition-opacity duration-300 group-hover:opacity-20"></div>
           </Link>
         ))}
       </main>

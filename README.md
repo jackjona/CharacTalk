@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# CharacTalk
 
-## Getting Started
+**CharacTalk** is an AI-powered roleplay chat platform where you can interact with dynamic characters and explore endless narratives powered by advanced AI language models.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **AI-Powered Roleplay**: Interact with lifelike, evolving AI characters that respond intelligently to your input.
+- **Immersive Dialogues**: Experience seamless, dynamic conversations.
+- **Endless Possibilities**: Dive into various genres like fantasy and more.
+- **PWA Support**: Access the platform seamlessly across devices with Progressive Web App (PWA) support, allowing fora native app-like experience.
+- **Text-to-Speech (TTS) Capability**: Engage in voice-based roleplay with built-in TTS features that bring your conversations to life.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Built Using
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- Next.js
+- TailwindCSS
+- Supabase Database
+- Gemini API
+- edge-tts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## To Develop Locally
 
-## Learn More
+1. Get a [Gemini API Key](https://ai.google.dev/gemini-api/docs/api-key)
 
-To learn more about Next.js, take a look at the following resources:
+2. Setup a Supabase database with a table called `biographies`. Populate the database following the [Database Schema](###database-schema).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. (Optional for TTS capabilities) Setup and run [edge-tts](https://github.com/rany2/edge-tts)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. Set the env variables in `.example.env.local` and rename the file to `.env.local`
 
-## Deploy on Vercel
+5. Then run the development server:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   # or
+   pnpm dev
+   # or
+   bun dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+6. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+---
+
+### Database Schema
+
+| **Name**           | **Format**                 | **Type**  | **Description**                                                           |
+| ------------------ | -------------------------- | --------- | ------------------------------------------------------------------------- |
+| **id**             | `bigint`                   | `number`  | Unique identifier for the character.                                      |
+| **character_name** | `text`                     | `string`  | Character's full name.                                                    |
+| **biography**      | `text`                     | `string`  | A brief biography of the character, detailing background and personality. |
+| **created_at**     | `timestamp with time zone` | `string`  | Date and time the character was created.                                  |
+| **voice**          | `text`                     | `string`  | Text-to-Speech (TTS) voice associated with the character.                 |
+| **character_id**   | `uuid`                     | `string`  | A unique identifier for each character instance.                          |
+| **description**    | `text`                     | `string`  | A detailed description of the character's traits and attributes.          |
+| **img_url**        | `text`                     | `string`  | URL(s) for the character image(s).                                        |
+| **public**         | `boolean`                  | `boolean` | Whether or not the character should be displayed on the homepage.         |

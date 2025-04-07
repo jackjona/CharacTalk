@@ -2,6 +2,8 @@
 import { useState, useEffect, use } from "react";
 import ChatPage from "../../components/ChatPage";
 import Link from "next/link";
+import Header from "@/app/components/Header";
+import Loader from "@/app/components/Loader";
 
 export default function ChatSlug({ params }) {
   const { slug } = use(params);
@@ -38,12 +40,16 @@ export default function ChatSlug({ params }) {
     fetchCharacter();
   }, [slug]);
 
-  if (isLoading) {
+  /*   if (isLoading) {
     return (
       <div className="min-h-screen flex justify-center items-center bg-slate-800">
         <div className="animate-spin rounded-full h-16 w-16 border-t-10 border-r-24 border-b-10 border-l-24 border-blue-600"></div>
       </div>
     );
+  } */
+
+  if (isLoading) {
+    return <Loader />;
   }
   if (error) return <div>Error: {error}</div>;
   if (!character) return <div>Character not found.</div>;
@@ -51,9 +57,7 @@ export default function ChatSlug({ params }) {
   // Pass the fetched data and props to the reusable Home component
   return (
     <div className="min-h-screen bg-slate-900 flex flex-col items-center p-4 sm:p-8">
-      <header className="bg-blue-600 text-white py-4 px-6 text-center text-xl font-bold shadow-md rounded-xl">
-        <Link href="/">Character Chat AI</Link>
-      </header>
+      <Header />
       <ChatPage character={character} character_id={slug} />
     </div>
   );

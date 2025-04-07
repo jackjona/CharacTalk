@@ -45,7 +45,7 @@ const ChatPage = ({ character, character_id }) => {
     if (isLoadingAudio) return;
     setIsLoadingAudio(true);
 
-    // The code for https://tts.cyyz.workers.dev can be found at app/api/tts/route.js.
+    // The code for https://tts.cyyz.workers.dev can be found at: app/api/tts/route.js.
     try {
       const response = await fetch("https://tts.cyyz.workers.dev", {
         method: "POST",
@@ -83,11 +83,11 @@ const ChatPage = ({ character, character_id }) => {
 
   return (
     <main className="flex flex-col flex-1 w-full max-w-3xl bg-slate-800 rounded-lg shadow-lg p-4 mt-8 space-y-4 overflow-hidden">
-      <header className="text-center">
+      <div className="text-center">
         <h1 className="text-xl font-semibold text-white">
           You are chatting with {character.character_name}
         </h1>
-      </header>
+      </div>
 
       <section className="flex-1 overflow-y-auto space-y-3">
         {chatHistory.map((chat, index) => {

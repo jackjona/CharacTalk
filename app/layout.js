@@ -12,10 +12,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const APP_NAME = "Character Chat";
-const APP_DEFAULT_TITLE = "My Awesome PWA App";
-const APP_TITLE_TEMPLATE = "%s - Character Chat";
-const APP_DESCRIPTION = "Best PWA app in the world!";
+const APP_NAME = "CharacTalk";
+const APP_DEFAULT_TITLE = "CharacTalk";
+const APP_TITLE_TEMPLATE = "%s - CharacTalk";
+const APP_DESCRIPTION =
+  "CharacTalk is an AI-powered roleplay chat platform where you can interact with dynamic characters and explore endless narratives powered by advanced AI language models.";
 
 export const metadata = {
   applicationName: APP_NAME,
