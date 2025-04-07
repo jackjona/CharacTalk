@@ -22,9 +22,16 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-gray-100 items-center justify-center">
-      <header className="justify-center items-center bg-slate-700 text-gray-200 py-4 px-6 text-xl w-2xl font-bold shadow-md rounded-xl mb-8 text-center">
-        Homepage
-      </header>
+      <Link href="/">
+        <header className="flex flex-row justify-center items-center bg-slate-700 text-gray-200 p-2 text-xl font-bold shadow-md rounded-2xl mb-8 text-center">
+          <img
+            src="/logo.jpg"
+            alt="Logo"
+            className="mx-auto w-16 h-16 object-cover rounded-full shadow-md"
+          />{" "}
+          <h1 className="pl-4 pr-4">Character Chat</h1>
+        </header>
+      </Link>
 
       <main className="flex flex-wrap justify-center items-center gap-12 max-w-6xl mx-auto">
         {characters.map((character) => (

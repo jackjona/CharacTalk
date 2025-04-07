@@ -45,8 +45,9 @@ const ChatPage = ({ character, character_id }) => {
     if (isLoadingAudio) return;
     setIsLoadingAudio(true);
 
+    // The code for https://tts.cyyz.workers.dev can be found at app/api/tts/route.js.
     try {
-      const response = await fetch("/api/tts", {
+      const response = await fetch("https://tts.cyyz.workers.dev", {
         method: "POST",
         body: JSON.stringify({ text, voice: character.voice, format: "mp3" }),
       });
