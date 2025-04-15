@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
-import Header from "./components/Header";
 
 export default async function Home() {
   const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -20,8 +19,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex flex-col bg-linear-45 from-slate-900 from-20% to-[#CB6432] p-10 min-h-screen text-gray-100 items-center justify-center">
-      <Header />
+    <div className="flex flex-col p-10 items-center justify-center">
       <main className="flex flex-wrap justify-center items-center gap-12 max-w-6xl mx-auto pb-6">
         {characters.map((character) => (
           <Link
@@ -33,6 +31,8 @@ export default async function Home() {
               className="absolute inset-0 h-full w-full object-cover opacity-80 group-hover:opacity-90"
               src={character.img_url}
               alt={character.character_name}
+              width="256"
+              height="312"
             />
             <div className="absolute bottom-0 w-full px-2 py-2 pt-8 text-center bg-gradient-to-t from-black to-transparent">
               <h2 className="text-lg font-semibold text-white">

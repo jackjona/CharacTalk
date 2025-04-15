@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const Loader = () => {
   return (
-    <div className="min-h-screen flex justify-center items-center bg-slate-900">
+    <div className="fixed inset-0 flex justify-center items-center bg-slate-900 z-50">
       <img
         src="/icon-256.png"
         alt="Logo"

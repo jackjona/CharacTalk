@@ -1,6 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NetworkStatus from "./components/NetworkStatus";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -53,17 +55,21 @@ export const metadata = {
 };
 
 export const viewport = {
-  themeColor: "#FFFFFF",
+  themeColor: "#0F172A",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased dark `}
       >
         <NetworkStatus />
-        {children}
+        <div className=" bg-linear-45 from-slate-900 from-20% to-[#CB6432] min-h-screen text-gray-100">
+          <Header />
+          {children}
+          <Footer />
+        </div>
       </body>
     </html>
   );

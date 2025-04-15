@@ -44,12 +44,17 @@ const ChatPage = ({ character, character_id }) => {
   const generateAudio = async (text) => {
     if (isLoadingAudio) return;
     setIsLoadingAudio(true);
+    const sanitizedText = text.replace(/\*+/g, "");
 
     // The code for https://tts.cyyz.workers.dev can be found at: app/api/tts/route.js.
     try {
       const response = await fetch("https://tts.cyyz.workers.dev", {
         method: "POST",
-        body: JSON.stringify({ text, voice: character.voice, format: "mp3" }),
+        body: JSON.stringify({
+          text: sanitizedText,
+          voice: character.voice,
+          format: "mp3",
+        }),
       });
 
       if (!response.ok) {
@@ -82,7 +87,7 @@ const ChatPage = ({ character, character_id }) => {
   };
 
   return (
-    <main className="flex flex-col flex-1 w-full max-w-3xl bg-slate-800 rounded-lg shadow-lg p-4 mt-8 space-y-4 overflow-hidden">
+    <main className="flex flex-col flex-1 w-full max-w-3xl bg-slate-800/80 rounded-lg shadow-lg p-4 mt-8 space-y-4 overflow-hidden">
       <div className="text-center">
         <h1 className="text-xl font-semibold text-white">
           You are chatting with {character.character_name}
@@ -102,7 +107,7 @@ const ChatPage = ({ character, character_id }) => {
               <div
                 className={`relative px-4 ${messagePadding} m-2 rounded-2xl max-w-md break-words shadow-md ${
                   chat.sender === "user"
-                    ? "bg-indigo-600 text-white"
+                    ? "bg-amber-600 text-white"
                     : "bg-slate-700 text-white"
                 }`}
               >
@@ -117,8 +122,8 @@ const ChatPage = ({ character, character_id }) => {
                   <button
                     className={`absolute bottom-1 right-1 px-2 py-1 rounded-full ${
                       isLoadingAudio
-                        ? "animate-pulse bg-fuchsia-500 cursor-not-allowed"
-                        : "bg-fuchsia-500 hover:bg-fuchsia-600"
+                        ? "animate-pulse bg-orange-500 cursor-not-allowed"
+                        : "bg-orange-500 hover:bg-orange-600"
                     }`}
                     onClick={() => generateAudio(chat.text)}
                     disabled={isLoadingAudio}
@@ -145,15 +150,13 @@ const ChatPage = ({ character, character_id }) => {
             onKeyDown={handleKeyDown}
             rows="2"
             placeholder="Type your message..."
-            className="flex-1 resize-none p-3 bg-gray-800 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="flex-1 resize-none p-3 bg-gray-800 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
           />
           <button
             onClick={sendMessage}
             disabled={isSending}
-            className={`ml-3 px-4 py-2 bg-indigo-600 text-white rounded-lg transition-colors duration-200 ${
-              isSending
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-indigo-700"
+            className={`ml-3 px-4 py-2 bg-amber-600 text-white rounded-lg transition-colors duration-200 ${
+              isSending ? "opacity-50 cursor-not-allowed" : "hover:bg-amber-700"
             }`}
           >
             {isSending ? "Sending..." : "Send"}

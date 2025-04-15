@@ -5,8 +5,8 @@
   "description": "CharacTalk is an AI-powered roleplay chat platform where you can interact with dynamic characters and explore endless narratives powered by advanced AI language models.",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#ffffff",
-  "theme_color": "#317EFB",
+  "background_color": "#0F172A",
+  "theme_color": "#CB6432",
   "icons": [
     {
       "src": "/icon-192.png",
