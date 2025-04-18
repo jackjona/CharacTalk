@@ -26,7 +26,7 @@
 
 3. (Optional for TTS capabilities) Setup and run [edge-tts](https://github.com/rany2/edge-tts)
 
-4. Set the env variables in `.example.env.local` and rename the file to `.env.local`
+4. Set the env variables in `.env.local.example` and rename the file to `.env.local`
 
 5. Then run the development server:
 
