@@ -6,7 +6,7 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 export async function GET(request) {
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
       // Character generation prompt below
       contents: `
      Generate a character: DESCRIPTION, for LLM roleplay. Only give the characer response, no introduction, conclusion or reply needed. 
