@@ -3,9 +3,12 @@ import withSerwistInit from "@serwist/next";
 const withSerwist = withSerwistInit({
   swSrc: "app/sw.js",
   swDest: "public/sw.js",
-  disable: process.env.NEXT_PUBLIC_ENV === "development", // Disable PWA in development
+  // Disable PWA in development
+  disable: process.env.NODE_ENV !== "production",
 });
 
 export default withSerwist({
-  // Other Next.js settings here
+  // Turbopack config to silence errors
+  turbopack: {},
+  reactStrictMode: true,
 });

@@ -113,9 +113,7 @@ const ChatPage = ({ character, character_id }) => {
               >
                 <div
                   dangerouslySetInnerHTML={{
-                    __html: `<strong>${
-                      chat.sender === "user" ? "You" : "AI"
-                    }:</strong> ${formatMessage(chat.text)}`,
+                    __html: `${formatMessage(chat.text)}`,
                   }}
                 />
                 {chat.sender !== "user" && (

@@ -6,21 +6,19 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint ."
   },
   "dependencies": {
-    "@google/genai": "^0.7.0",
     "@serwist/next": "^9.0.13",
     "@supabase/supabase-js": "^2.49.4",
-    "next": "15.2.4",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "next": "16.0.7",
+    "react": "19.2.1",
+    "react-dom": "19.2.1"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "eslint": "^9",
-    "eslint-config-next": "15.2.4",
+    "eslint-config-next": "16.0.7",
     "serwist": "^9.0.13",
     "tailwindcss": "^4"
   }

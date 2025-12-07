@@ -15,12 +15,12 @@
 - Next.js
 - TailwindCSS
 - Supabase Database
-- Gemini API
+- Openrouter
 - edge-tts
 
 ## To Develop Locally
 
-1. Get a [Gemini API Key](https://ai.google.dev/gemini-api/docs/api-key)
+1. Get an Openrouter API key
 
 2. Setup a Supabase database with a table called `biographies`. Populate the database following the [Database Schema](###database-schema).
 

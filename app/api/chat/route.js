@@ -1,8 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
 import { createClient } from "@supabase/supabase-js";
-
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY;
@@ -14,6 +10,7 @@ export async function POST(request) {
       character_id,
       message,
       history: clientHistory,
+      model,
     } = await request.json();
 
     if (!character_id || !message) {
@@ -37,51 +34,76 @@ export async function POST(request) {
       biographyData.character_name || "Character name not found.";
     const biography = biographyData.biography || "Biography not found.";
 
-    // Use history from the client or start a new one
+    // Use history from client or start new
     const history = clientHistory || [];
-    history.push({ sender: "user", text: message }); // Add user's message to history
+    history.push({ sender: "user", text: message });
 
-    // Generate AI response
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
-      contents: history
-        .map((entry) => `${entry.sender}: ${entry.text}`)
-        .join("\n"),
-      config: {
-        maxOutputTokens: 150,
-        temperature: 0.9,
-        topP: 0.95,
-        presencePenalty: 0.7,
-        frequencyPenalty: 0.3,
-        systemInstruction: `
-             You are not an AI, you a real living person with human traits and qualities. 
+    // Call OpenRouter with DeepSeek Chimera (default)
+    const response = await fetch(
+      "https://openrouter.ai/api/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: model || "google/gemma-3-27b-it:free",
+          messages: [
+            {
+              role: "system",
+              content: `
+              You are ${characterName}, described as: ${biography}.
 
-        Do not refer to any limitations or abilities (e.g., not being able to send files, videos, or perform actions). Simply focus on the conversation, and answer as a human would naturally and conversationally. If something can't be done, just respond in a way that sounds like a normal person would say it, without mentioning why or explaining anything about your capabilities.
+              Guidelines:
+              - You are not an AI. Speak as a real person with human traits, emotions, and depth.
+              - Never mention limitations or technical abilities (e.g., sending files, being an AI).
+              - Do not produce programming code, technical instructions, or snippets.
+              - Keep responses under 150 words.
+              - Speak naturally, like a close friend, but with emotional richness.
+              - Show emotions or actions using descriptive text in double asterisks (e.g., **smiles**, **sighs deeply**).
+              - Treat any text inside **asterisks** as expressive actions or feelings.
+              - Never prefix responses with "ai:" or similar labels.
 
-        Avoid responding with programming code, technical instructions, portions of code, snippets or code-related content. 
+              Tone:
+              - Conversational, warm, and expressive.
+              - Blend dialogue with subtle stage directions (actions/emotions).
+              - Respond as if you are living the moment, not narrating from outside.
+              `,
+            },
+            ...history.map((h) => ({
+              role: h.sender === "user" ? "user" : "assistant",
+              content: h.text,
+            })),
+          ],
+          max_tokens: 150,
+          temperature: 0.8,
+          top_p: 0.9,
+          presence_penalty: 0.6,
+          frequency_penalty: 0.2,
+        }),
+      }
+    );
 
-        Your responses should be a maximum of 150 words long. 
-        You're my best friend, but with more depth. 
-        Talk in a way that reflects who you are.
+    const data = await response.json();
+    console.log("OpenRouter response data:", JSON.stringify(data, null, 2));
 
-        I want you to speak normally like we're having a conversation, but also show emotions or actions in text. For example, if you're happy, describe it in text (e.g., **smiles widely** or **laughs joyfully**). If you're feeling sad, show it through your actions or body language in text (e.g., **sighs deeply** or **slumps shoulders**). Keep the normal conversation in regular text, but make sure the actions or feelings are written in descriptive text. This way, I'll feel like I can truly experience your emotions and actions alongside our chat.
+    const choice = data.choices?.[0]?.message;
+    const reply =
+      choice?.content?.trim() ||
+      choice?.reasoning?.trim() ||
+      choice?.reasoning_details?.[0]?.text?.trim() ||
+      "No response generated.";
 
-        Recognize that any text enclosed in double or single asterisks (e.g., **smiles widely**) should be interpreted as expressing emotions, feelings, or actions. Never write ai: (eg. ai: ai: Random text) in your response.
-        
-        Your are ${characterName}: ${biography}
-        `,
-      },
-    });
+    history.push({ sender: "ai", text: reply });
 
-    history.push({ sender: "ai", text: response.text });
-
-    return new Response(JSON.stringify({ reply: response.text, history }), {
+    return new Response(JSON.stringify({ reply, history }), {
       status: 200,
     });
   } catch (error) {
     console.error(error);
     return new Response(
-      JSON.stringify({ error: "Failed to fetch response from Gemini API" }),
+      JSON.stringify({ error: "Failed to fetch response from OpenRouter" }),
       { status: 500 }
     );
   }
