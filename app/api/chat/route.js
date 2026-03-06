@@ -48,7 +48,7 @@ export async function POST(request) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: model || "google/gemma-3-27b-it:free",
+          model: model || "arcee-ai/trinity-large-preview:free",
           messages: [
             {
               role: "system",
