@@ -48,7 +48,7 @@ export async function POST(request) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: model || "arcee-ai/trinity-large-preview:free",
+          model: model || "openrouter/owl-alpha",
           messages: [
             {
               role: "system",
@@ -82,7 +82,7 @@ export async function POST(request) {
           presence_penalty: 0.6,
           frequency_penalty: 0.2,
         }),
-      }
+      },
     );
 
     const data = await response.json();
@@ -104,7 +104,7 @@ export async function POST(request) {
     console.error(error);
     return new Response(
       JSON.stringify({ error: "Failed to fetch response from OpenRouter" }),
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
